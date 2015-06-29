@@ -1,14 +1,18 @@
 ################################################################
 #
-# $Id:$
+# Last updated: Jun 22, 2008
+# ~Keripo
 #
-# $Log:$
+# hDoom 1.10 K1 by Keripo
+# Port of original Doom source code to iPodLinux via hotdog
+# Based on iDoom, sdldoom and igpSP source code
 #
-CC=  gcc  # gcc or g++
+CC=arm-uclinux-elf-gcc
 
-CFLAGS=-g -Wall -DNORMALUNIX -DLINUX # -DUSEASM 
-LDFLAGS=-L/usr/X11R6/lib
-LIBS=-lXext -lX11 -lnsl -lm
+CFLAGS=-O3 -msoft-float -fpack-struct -mstructure-size-boundary=8 \
+       -I../hotdog -DNORMALUNIX -DLINUX
+LDFLAGS=-elf2flt
+LIBS=-L../hotdog/ipod -lhotdog -lm
 
 # subdirectory for objects
 O=linux
@@ -77,15 +81,15 @@ OBJS=				\
 		$(O)/info.o				\
 		$(O)/sounds.o
 
-all:	 $(O)/linuxxdoom
+all:	 $(O)/hDoom
 
 clean:
 	rm -f *.o *~ *.flc
 	rm -f linux/*
 
-$(O)/linuxxdoom:	$(OBJS) $(O)/i_main.o
+$(O)/hDoom:	$(OBJS) $(O)/i_main.o
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(O)/i_main.o \
-	-o $(O)/linuxxdoom $(LIBS)
+	-o $(O)/hDoom $(LIBS)
 
 $(O)/%.o:	%.c
 	$(CC) $(CFLAGS) -c $< -o $@

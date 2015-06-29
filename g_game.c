@@ -227,6 +227,26 @@ int G_CmdChecksum (ticcmd_t* cmd)
     return sum; 
 } 
  
+// Needed since sometimes strafing get stuck in-game
+// Thus, player should stop moving when user is not touching the iPod's wheel
+// Note that this doesn't fix kep presses getting stuck ; /
+extern int IPOD_HW_VER;
+static int ipod_wheel_is_touched() // ~Keripo
+{
+    int touch;
+    touch = 0xff;
+    if (IPOD_HW_VER != 0x4 && IPOD_HW_VER != 0x3) { // mini 1G or 3G
+        int in, st;
+        in = inl(0x7000C140);
+        st = ((in & 0xff000000) >> 24);
+        if (st == 0xc0)
+            touch = (in & 0x007F0000 ) >> 16;
+    }
+    if (touch != 0xff)
+        return 1;
+    else
+        return 0;
+}
 
 //
 // G_BuildTiccmd
@@ -419,8 +439,17 @@ void G_BuildTiccmd (ticcmd_t* cmd)
     else if (side < -MAXPLMOVE) 
 	side = -MAXPLMOVE; 
  
-    cmd->forwardmove += forward; 
-    cmd->sidemove += side;
+    // Note that this doesn't fix key presses getting stuck.
+    // For stuck keys, press the key again for the keyup event ; /
+    // This will, however, prevent further forward moving
+    // speed increases and thus prevent accidental rushes.
+    if (ipod_wheel_is_touched()) { // ~Keripo
+        cmd->forwardmove += forward;
+        cmd->sidemove += side;
+    } else {
+        cmd->forwardmove = 0;
+        cmd->sidemove = 0;
+    }
     
     // special buttons
     if (sendpause) 

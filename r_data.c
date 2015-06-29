@@ -68,11 +68,11 @@ rcsid[] = "$Id: r_data.c,v 1.4 1997/02/03 16:47:55 b1 Exp $";
 //
 typedef struct
 {
-    short	originx;
-    short	originy;
-    short	patch;
-    short	stepdir;
-    short	colormap;
+    short __attribute__ ((packed)) originx;
+    short __attribute__ ((packed)) originy;
+    short __attribute__ ((packed)) patch;
+    short __attribute__ ((packed)) stepdir;
+    short __attribute__ ((packed)) colormap;
 } mappatch_t;
 
 
@@ -88,8 +88,8 @@ typedef struct
     short		width;
     short		height;
     void		**columndirectory;	// OBSOLETE
-    short		patchcount;
-    mappatch_t	patches[1];
+    short		__attribute__ ((packed)) patchcount;
+    mappatch_t	__attribute__ ((packed)) patches[1];
 } maptexture_t;
 
 

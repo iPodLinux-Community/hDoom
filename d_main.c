@@ -580,8 +580,16 @@ void IdentifyVersion (void)
 	doomwaddir = ".";
 
     // Commercial.
-    doom2wad = malloc(strlen(doomwaddir)+1+9+1);
-    sprintf(doom2wad, "%s/doom2.wad", doomwaddir);
+    if (M_CheckParm ("-freedoom")) { // ~Keripo
+        // Note that FreeDM is just an empty IWAD with no monsters
+        // It is used here intended as an IWAD lump supplier for PWADs
+        // The FreeDoom IWAD does not work with vanilla Doom unfortunately
+        doom2wad = malloc(strlen(doomwaddir)+1+10+1);
+        sprintf(doom2wad, "%s/freedm.wad", doomwaddir);
+    } else {
+        doom2wad = malloc(strlen(doomwaddir)+1+9+1);
+        sprintf(doom2wad, "%s/doom2.wad", doomwaddir);
+    }
 
     // Retail.
     doomuwad = malloc(strlen(doomwaddir)+1+8+1);
@@ -608,9 +616,7 @@ void IdentifyVersion (void)
     doom2fwad = malloc(strlen(doomwaddir)+1+10+1);
     sprintf(doom2fwad, "%s/doom2f.wad", doomwaddir);
 
-    home = getenv("HOME");
-    if (!home)
-      I_Error("Please set $HOME to your home directory");
+    home = ".";
     sprintf(basedefault, "%s/.doomrc", home);
 #endif
 

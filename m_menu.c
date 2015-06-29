@@ -1075,36 +1075,9 @@ int     quitsounds2[8] =
     sfx_sgtatk
 };
 
-
-
-void M_QuitResponse(int ch)
-{
-    if (ch != 'y')
-	return;
-    if (!netgame)
-    {
-	if (gamemode == commercial)
-	    S_StartSound(NULL,quitsounds2[(gametic>>2)&7]);
-	else
-	    S_StartSound(NULL,quitsounds[(gametic>>2)&7]);
-	I_WaitVBL(105);
-    }
-    I_Quit ();
-}
-
-
-
-
 void M_QuitDOOM(int choice)
 {
-  // We pick index 0 which is language sensitive,
-  //  or one at random, between 1 and maximum number.
-  if (language != english )
-    sprintf(endstring,"%s\n\n"DOSY, endmsg[0] );
-  else
-    sprintf(endstring,"%s\n\n"DOSY, endmsg[ (gametic%(NUM_QUITMESSAGES-2))+1 ]);
-  
-  M_StartMessage(endstring,M_QuitResponse,true);
+  I_Quit();
 }
 
 
@@ -1441,7 +1414,21 @@ boolean M_Responder (event_t* ev)
 	else
 	    if (ev->type == ev_keydown)
 	    {
-		ch = ev->data1;
+			// Dirty hack borrowed from iDoom for iPod key mapping
+			switch(ev->data1) {
+				case KEY_RCTRL:
+					ch = KEY_DOWNARROW;
+					break;
+				case ' ':
+					ch = KEY_ENTER;
+					break;
+				case '.':
+					ch = 'y';
+					break;
+				default:
+					ch = ev->data1;
+					break;
+			}
 	    }
     }
     

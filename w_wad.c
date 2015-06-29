@@ -71,14 +71,14 @@ void strupr (char* s)
     while (*s) { *s = toupper(*s); s++; }
 }
 
+// From iDoom
 int filelength (int handle) 
-{ 
-    struct stat	fileinfo;
-    
-    if (fstat (handle,&fileinfo) == -1)
-	I_Error ("Error fstating");
-
-    return fileinfo.st_size;
+{
+	int current = lseek(handle, 0, SEEK_CUR);
+	int length  = lseek(handle, 0, SEEK_END);
+	lseek(handle, current, SEEK_SET);
+	
+	return length;
 }
 
 

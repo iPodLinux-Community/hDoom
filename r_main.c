@@ -876,23 +876,11 @@ void R_RenderPlayerView (player_t* player)
     R_ClearDrawSegs ();
     R_ClearPlanes ();
     R_ClearSprites ();
-    
-    // check for new console commands.
-    NetUpdate ();
 
     // The head node is the last node output.
     R_RenderBSPNode (numnodes-1);
     
-    // Check for new console commands.
-    NetUpdate ();
-    
     R_DrawPlanes ();
     
-    // Check for new console commands.
-    NetUpdate ();
-    
     R_DrawMasked ();
-
-    // Check for new console commands.
-    NetUpdate ();				
 }
